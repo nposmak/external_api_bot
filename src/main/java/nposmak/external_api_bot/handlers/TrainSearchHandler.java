@@ -7,8 +7,8 @@ import nposmak.external_api_bot.chatCache.RequestDataCache;
 import nposmak.external_api_bot.config.Icons;
 import nposmak.external_api_bot.dto.TrainCarInfo;
 import nposmak.external_api_bot.dto.TrainInfo;
-import nposmak.external_api_bot.rzd_api_request.StationCodeCommunication;
-import nposmak.external_api_bot.rzd_api_request.TrainInfoCommunication;
+import nposmak.external_api_bot.service.StationCodeCommunication;
+import nposmak.external_api_bot.service.TrainInfoCommunication;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -60,15 +60,13 @@ public class TrainSearchHandler implements InputMessageHandler {
 
         SendMessage replyToUser = new SendMessage();
         replyToUser.setChatId(String.valueOf(chatId));
-        /////???
-        //replyToUser.setText("Что-то пошло не так, повторите запрос.");
 
         RequestData requestData = requestDataCache.getUsersTrainSearchData(userId);
         BotState botState = requestDataCache.getUsersCurrentBotState(userId);
 
         if(botState.equals(BotState.ASK_DEPARTURE_STATION)){
 
-            replyToUser.setText("Введите станцию отправления");
+            replyToUser.setText("Введите станцию отправления:");
 
             requestDataCache.setUsersCurrentBotState(userId, BotState.ASK_ARRIVAL_STATION);
         }
@@ -76,16 +74,17 @@ public class TrainSearchHandler implements InputMessageHandler {
         if(botState.equals(BotState.ASK_ARRIVAL_STATION)){
             long departureStationCode = stationCodeCommunication.getStationCode(usersAnswer);
 
-            if(departureStationCode == -1){
+            if( departureStationCode == -1){
+                replyToUser.setText("Станция не найдена, введите заного или проверьте в СПРАВОЧНИКЕ СТАНЦИЙ.");
 
-               replyToUser.setText("Станция не найдена");
-               requestDataCache.setUsersCurrentBotState(userId, BotState.ASK_DEPARTURE_STATION);
+              return replyToUser;
+
             }else
 
             requestData.setDepartureStationCode(departureStationCode);
 
 
-            replyToUser.setText("код станции отправления "+requestData.getDepartureStationCode() + "\n"+"Введите станицю назначения");
+            replyToUser.setText("Код станции отправления:"+requestData.getDepartureStationCode() + "\n"+"Введите станицю назначения:");
 
             requestDataCache.setUsersCurrentBotState(userId, BotState.ASK_DEPARTURE_DATE);
         }
@@ -94,13 +93,13 @@ public class TrainSearchHandler implements InputMessageHandler {
             long arrivalStationCode = stationCodeCommunication.getStationCode(usersAnswer);
 
             if(arrivalStationCode == -1){
-
-                replyToUser.setText("Станция не найдена");
+                replyToUser.setText("Станция не найдена, введите заного или проверьте в СПРАВОЧНИКЕ СТАНЦИЙ.");
+                return replyToUser;
             }
             requestData.setArrivalStationCode(arrivalStationCode);
 
 
-            replyToUser.setText(requestData.getArrivalStationCode() + "\n" +"введите дату отправления");
+            replyToUser.setText(requestData.getArrivalStationCode() + "\n" +"Введите дату отправления в формате дд.мм.гггг");
 
             requestDataCache.setUsersCurrentBotState(userId, BotState.CHECK_DEPARTURE_DATE);
 
@@ -116,7 +115,7 @@ public class TrainSearchHandler implements InputMessageHandler {
                 departureDate = new SimpleDateFormat("dd.MM.yyyy").parse(usersAnswer);
             }catch (ParseException e){
 
-                replyToUser.setText("неверный формат даты!");
+                replyToUser.setText("Неверный формат даты!");
                 return  replyToUser;
             }
             requestData.setDateDepart(departureDate);
@@ -134,7 +133,6 @@ public class TrainSearchHandler implements InputMessageHandler {
             }
 
             StringBuilder trainInfoText = new StringBuilder();
-            //String trainInfoText ="";
             for(TrainInfo trains: trainInfoList){
 
                 trainInfoText.append("\n"+Icons.TRAIN +"№" + trains.getTrainNumber()+" " +trains.getTrainBrand()+"\n" );
@@ -146,15 +144,6 @@ public class TrainSearchHandler implements InputMessageHandler {
                 trainInfoText.append("время прибытия: " + trains.getTimeArrival()+ "\n");
                 trainInfoText.append("время в пути: "+ trains.getTimeInWay()+ "\n");
 
-//                trainInfoText= Icons.TRAIN +"№" + trains.getTrainNumber()+" " +trains.getTrainBrand()+"\n"+
-//                    "станция отправления: " + trains.getStationDeparture()+" "+ "\n"+
-//                    "станция прибытия: " + trains.getStationArrival()+" "+ "\n"+
-//                    "дата отправления:"+ Icons.ARROW + trains.getDateDeparture()+" "+ "\n"+
-//                    "время отправления:"+ Icons.ARROW  + trains.getTimeDeparture()+" "+ "\n"+
-//                    "дата прибытия: " + trains.getDateArrival()+" "+ "\n"+
-//                    "время прибытия: " + trains.getTimeArrival()+" "+ "\n"+
-//                    "время в пути: "+ trains.getTimeInWay()+" "+ "\n";
-
                 List<TrainCarInfo> cars = new ArrayList<>(trains.getCars());
                 StringBuilder carText = new StringBuilder();
 
@@ -165,17 +154,15 @@ public class TrainSearchHandler implements InputMessageHandler {
 
                 }
 
-
             replyToUser.setText(String.valueOf(trainInfoText.append(carText)));
-                //replyToUser.setText(trainInfoText + carText);
 
             }
 
             requestDataCache.setUsersCurrentBotState(userId, BotState.COMPLETE);
             return replyToUser;
         }
-        requestDataCache.saveTrainSearchData(userId, requestData);
 
+        requestDataCache.saveTrainSearchData(userId, requestData);
         return replyToUser;
     }
 

@@ -1,19 +1,16 @@
 package nposmak.external_api_bot.chatCache;
 
 import nposmak.external_api_bot.botState_control.BotState;
-import nposmak.external_api_bot.dto.TrainInfo;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class RequestDataCache implements RequestDataCacheInterface {
 
     private Map<Long, BotState> usersBotState = new HashMap<>();
     private Map<Long, RequestData> usersRequestData = new HashMap<>();
-    //private Map<Long, List<TrainInfo>> foundedTrains = new HashMap<>();
-
-
 
     @Override
     public void setUsersCurrentBotState(long userId, BotState botState) {
@@ -43,13 +40,4 @@ public class RequestDataCache implements RequestDataCacheInterface {
         return userRequestData;
     }
 
-
-
-
-    //@Override
-//    public List<TrainInfo> getUsersFoundedTrains(long chatId) {
-//        List<TrainInfo> foundedTrain = foundedTrains.get(chatId);
-//
-//        return Objects.isNull(foundedTrain) ? Collections.emptyList() : foundedTrain;
-//    }
 }

@@ -1,4 +1,4 @@
-package nposmak.external_api_bot.rzd_api_request;
+package nposmak.external_api_bot.service;
 
 
 import lombok.Getter;
@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Getter
@@ -40,7 +40,6 @@ public class StationCodeCommunication {
     }
 
 
-
     private Optional <StationCode[]> processCodeRequest(String stationName){
 
         String stationNameParam = stationName.toUpperCase();
@@ -53,6 +52,7 @@ public class StationCodeCommunication {
                             StationCode[].class);
 
         StationCode[] allCodes = responseEntity.getBody();
+        System.out.println(Arrays.toString(allCodes));
 
         if(allCodes == null){
             return Optional.empty();

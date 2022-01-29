@@ -1,4 +1,4 @@
-package nposmak.external_api_bot.rzd_api_request;
+package nposmak.external_api_bot.service;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -6,21 +6,15 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
-import nposmak.external_api_bot.config.TelegramBot;
 import nposmak.external_api_bot.dto.TrainInfo;
 import org.springframework.http.*;
-import org.springframework.http.converter.json.GsonBuilderUtils;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.util.SocketUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Getter
 @Setter
@@ -28,22 +22,18 @@ import java.util.regex.Pattern;
 public class TrainInfoCommunication{
 
     private final RestTemplate restTemplate;
-    //private TelegramBot telegramBot;
 
     private ObjectMapper objectMapper = new ObjectMapper();
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
     public TrainInfoCommunication(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
-        //this.telegramBot = telegramBot;
-
     }
 
 
     public List<TrainInfo> getTrainInfo(long departureStationCode, long arrivalStationCode, Date departureDate){
 
         String departureDateString = simpleDateFormat.format(departureDate);
-
 
         System.out.println(departureStationCode);
         System.out.println(arrivalStationCode);
@@ -57,7 +47,6 @@ public class TrainInfoCommunication{
                 "&dt0="+departureDateString+"&md=0";
 
         String trainInfoURL = "https://pass.rzd.ru/timetable/public/ru?layer_id=5827";
-
 
         ResponseEntity<String> responseForRIDRequest =
                 restTemplate.exchange(
@@ -74,7 +63,7 @@ public class TrainInfoCommunication{
 //
 //        long ridForSession = Long.parseLong(matcher.group());
 //        /**Проверить тут */
-//        System.out.println(ridForSession);
+
 
         String rid = null;
         try {
@@ -89,13 +78,6 @@ public class TrainInfoCommunication{
             e.printStackTrace();
         }
         long ridForSession = Long.parseLong(rid);
-//        Optional<String> rid = parseRID(ridResponseBody);
-
-
-
-
-        System.out.println("RID_CODE: "+ ridForSession);
-
 
         List<String> sessionRIDCookie = responseForRIDRequest.getHeaders().get("Set-Cookie");
 
@@ -144,10 +126,6 @@ public class TrainInfoCommunication{
         return Objects.isNull(trainInfoList) ? Collections.emptyList() : trainInfoList;
     }
 
-
-
-    /**Нужно опрашивать сервер пока он не ответит информацией по поездам,
-    //т.к. он часто возварщает RID ответ*/
     private boolean checkIfResponseIsRIDAgain(ResponseEntity<String> responseForTrainRequest) {
 
         if (responseForTrainRequest.getBody() == null) {
@@ -156,7 +134,6 @@ public class TrainInfoCommunication{
 
         return responseForTrainRequest.getBody().contains("\"result\":\"RID");
     }
-
 
     private Optional<String> parseRID(String jsonRespBody) {
         String rid = null;

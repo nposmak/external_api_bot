@@ -10,7 +10,8 @@ public enum Icons {
     TRAIN(EmojiParser.parseToUnicode(":station:")),
     VAGON(EmojiParser.parseToUnicode(":train:")),
     ARROW(EmojiParser.parseToUnicode(":arrow_right:")),
-    X(EmojiParser.parseToUnicode(":x:"));
+    X(EmojiParser.parseToUnicode(":x:")),
+    HI(EmojiParser.parseToUnicode(":raising_hand:"));
 
 
 

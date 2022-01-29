@@ -23,7 +23,6 @@ public class TelegramFacade {
         this.botStateContext = botStateContext;
     }
 
-
     public SendMessage handleUpdate(Update update) {
 
         SendMessage responseMessage= null;
@@ -34,7 +33,6 @@ public class TelegramFacade {
         return responseMessage;
     }
 
-
     private SendMessage handleInput(Message message) {
 
         String inputText = message.getText();
@@ -44,8 +42,14 @@ public class TelegramFacade {
         SendMessage responseMessage;
 
         switch (inputText){
-            case "Найти поезда":
+            case "НАЙТИ ПОЕЗДА":
                 botState = BotState.SEARCH_FOR_TRAIN;
+                break;
+            case "СПРАВОЧНИК СТАНЦИЙ":
+                botState = BotState.STATION_BOOK;
+                break;
+            case "/start":
+                botState = BotState.MENU;
                 break;
             default:
                 botState = requestDataCache.getUsersCurrentBotState(userId);
@@ -53,32 +57,11 @@ public class TelegramFacade {
         }
 
         requestDataCache.setUsersCurrentBotState(userId, botState);
+
         responseMessage = botStateContext.processInputMessage(botState, message);
 
         return responseMessage;
 
     }
-
-
-/*    public BotApiMethod<?> handleUpdate(Update update) {
-
-        if (update.hasCallbackQuery()) {
-             CallbackQuery callbackQuery = update.getCallbackQuery();
-            return null;
-
-        } else {
-
-            Message message = update.getMessage();
-            SendMessage sendMessage = new SendMessage();
-            sendMessage.setChatId(String.valueOf(message.getChatId()));
-            if (message.hasText()) {
-                sendMessage.setText("Привет " + message.getFrom().getFirstName() + " "
-                + message.getFrom().getLastName() + "!"
-                +"\n" + "ID вашего чата " + message.getChatId());
-                return sendMessage;
-            }
-        }
-        return null;
-    }*/
 
 }

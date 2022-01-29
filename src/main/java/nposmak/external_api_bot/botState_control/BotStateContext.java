@@ -24,58 +24,63 @@ public class BotStateContext {
         return currentMessageHandler.handle(message);
     }
 
-
-
     private InputMessageHandler findMessageHandler(BotState currentState) {
-        if (whatIsBotState(currentState)) {
+
+        if (isStationSearchState(currentState)){
+            return messageHandlers.get(BotState.STATION_BOOK);
+        }
+
+        if (isTrainSearchState(currentState)){
             return messageHandlers.get(BotState.SEARCH_FOR_TRAIN);
+        }
+
+        if (isMenu(currentState)){
+            return messageHandlers.get(BotState.MENU);
         }
 
         return messageHandlers.get(currentState);
     }
 
 
-    private boolean whatIsBotState(BotState currentState){
-        switch (currentState){
+    private boolean isMenu(BotState currentState){
+        switch (currentState) {
+
+            case MENU:
+
+                return true;
+            default:
+                return false;
+         }
+    }
+
+    private boolean isTrainSearchState(BotState currentState) {
+        switch (currentState) {
+
             case SEARCH_FOR_TRAIN:
             case ASK_DEPARTURE_STATION:
             case ASK_ARRIVAL_STATION:
             case ASK_DEPARTURE_DATE:
             case CHECK_DEPARTURE_DATE:
             case COMPLETE:
+
                 return true;
             default:
                 return false;
         }
     }
 
-    /*private boolean isTrainSearchState(BotState currentState) {
+    private boolean isStationSearchState(BotState currentState) {
         switch (currentState) {
-            case TRAINS_SEARCH:
-            case ASK_DATE_DEPART:
-            case DATE_DEPART_RECEIVED:
-            case ASK_STATION_ARRIVAL:
-            case ASK_STATION_DEPART:
-            case TRAINS_SEARCH_STARTED:
-            case TRAIN_INFO_RESPONCE_AWAITING:
-            case TRAINS_SEARCH_FINISH:
-                return true;
-            default:
-                return false;
-        }
-    }*/
 
-    /*private boolean isStationSearchState(BotState currentState) {
-        switch (currentState) {
-            case SHOW_STATIONS_BOOK_MENU:
-            case ASK_STATION_NAMEPART:
-            case STATION_NAMEPART_RECEIVED:
-            case STATIONS_SEARCH:
+            case STATION_BOOK:
+            case ASK_STATION_NAME:
+            case STATION_NAME_RECIVED:
+
                 return true;
             default:
                 return false;
         }
-    }*/
+    }
 
 }
 
