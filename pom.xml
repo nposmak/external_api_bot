@@ -14,9 +14,9 @@
     <name>external_api_bot</name>
     <description>Demo project for Spring Boot</description>
 
-    <properties>
+<!--    <properties>
         <java.version>11.0.12</java.version>
-    </properties>
+    </properties>-->
 
     <dependencies>
         <dependency>
