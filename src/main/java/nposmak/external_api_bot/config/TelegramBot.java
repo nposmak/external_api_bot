@@ -7,6 +7,7 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updates.SetWebhook;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.starter.SpringWebhookBot;
 
 
@@ -36,25 +37,25 @@ public class TelegramBot extends SpringWebhookBot {
         return responseToUser;
     }
 
-//    public void sendMessage(long chatId, String textMessage) {
-//        SendMessage sendMessage = new SendMessage();
-//        sendMessage.setChatId(String.valueOf(chatId));
-//        sendMessage.setText(textMessage);
-//
-//        try {
-//            execute(sendMessage);
-//        } catch (TelegramApiException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    public void sendMessage(SendMessage sendMessage) {
-//        try {
-//            execute(sendMessage);
-//        } catch (TelegramApiException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    public void sendMessage(long chatId, String textMessage) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(String.valueOf(chatId));
+        sendMessage.setText(textMessage);
+
+        try {
+            execute(sendMessage);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendMessage(SendMessage sendMessage) {
+        try {
+            execute(sendMessage);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public String getBotPath() {

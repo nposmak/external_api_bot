@@ -7,6 +7,7 @@ import nposmak.external_api_bot.chatCache.RequestDataCache;
 import nposmak.external_api_bot.config.Icons;
 import nposmak.external_api_bot.dto.TrainCarInfo;
 import nposmak.external_api_bot.dto.TrainInfo;
+import nposmak.external_api_bot.service.SendMessInSequence;
 import nposmak.external_api_bot.service.StationCodeCommunication;
 import nposmak.external_api_bot.service.TrainInfoCommunication;
 import org.springframework.stereotype.Component;
@@ -26,14 +27,17 @@ public class TrainSearchHandler implements InputMessageHandler {
     private RequestDataCache requestDataCache;
     private StationCodeCommunication stationCodeCommunication;
     private TrainInfoCommunication trainInfoCommunication;
+    private SendMessInSequence sendMessInSequence;
 
 
     public TrainSearchHandler(RequestDataCache requestDataCache,
                               StationCodeCommunication stationCodeCommunication,
-                               TrainInfoCommunication trainInfoCommunication) {
+                              TrainInfoCommunication trainInfoCommunication,
+                              SendMessInSequence sendMessInSequence) {
         this.requestDataCache = requestDataCache;
         this.stationCodeCommunication = stationCodeCommunication;
         this.trainInfoCommunication = trainInfoCommunication;
+        this.sendMessInSequence = sendMessInSequence;
     }
 
     @Override
@@ -128,37 +132,37 @@ public class TrainSearchHandler implements InputMessageHandler {
 
             if(trainInfoList.isEmpty()){
 
-                replyToUser.setText(Icons.X+" "+"По вашему запросу ничего не найдено"+" "+Icons.X);
+                replyToUser.setText(Icons.X+" "+"По вашему запросу ничего не найдено"+" "+"попробуйте ввести" +
+                        " ДРУГУЮ ДАТУ или проверьте название в СПРАВОЧНИКЕ");
                 return  replyToUser;
             }
+            sendMessInSequence.TicketsMessageSequence(chatId, trainInfoList);
 
-            StringBuilder trainInfoText = new StringBuilder();
-            for(TrainInfo trains: trainInfoList){
-
-                trainInfoText.append("\n"+Icons.TRAIN +"№" + trains.getTrainNumber()+" " +trains.getTrainBrand()+"\n" );
-                trainInfoText.append("станция отправления: " + trains.getStationDeparture()+ "\n");
-                trainInfoText.append("станция прибытия: " + trains.getStationArrival()+ "\n");
-                trainInfoText.append("дата отправления:"+ Icons.ARROW + trains.getDateDeparture()+ "\n");
-                trainInfoText.append("время отправления:"+ Icons.ARROW  + trains.getTimeDeparture()+ "\n");
-                trainInfoText.append("дата прибытия: " + trains.getDateArrival()+ "\n");
-                trainInfoText.append("время прибытия: " + trains.getTimeArrival()+ "\n");
-                trainInfoText.append("время в пути: "+ trains.getTimeInWay()+ "\n");
-
-                List<TrainCarInfo> cars = new ArrayList<>(trains.getCars());
-                StringBuilder carText = new StringBuilder();
-
-                for(TrainCarInfo car: cars){
-                    carText.append("\n"+Icons.VAGON + "тип вагона: "+car.getCarType()+" "+ "\n");
-                    carText.append("мин. цена: " + car.getTariff()+" "+ "\n");
-                    carText.append("свободных мест: "+car.getFreeSeats()+"\n");
-
-                }
-
-            replyToUser.setText(String.valueOf(trainInfoText.append(carText)));
-
-            }
-
-            requestDataCache.setUsersCurrentBotState(userId, BotState.COMPLETE);
+//            StringBuilder trainInfoText = new StringBuilder();
+//            for(TrainInfo trains: trainInfoList){
+//
+//                trainInfoText.append("\n"+Icons.TRAIN +"№" + trains.getTrainNumber()+" " +trains.getTrainBrand()+"\n" );
+//                trainInfoText.append("станция отправления: " + trains.getStationDeparture()+ "\n");
+//                trainInfoText.append("станция прибытия: " + trains.getStationArrival()+ "\n");
+//                trainInfoText.append("дата отправления:"+ Icons.ARROW + trains.getDateDeparture()+ "\n");
+//                trainInfoText.append("время отправления:"+ Icons.ARROW  + trains.getTimeDeparture()+ "\n");
+//                trainInfoText.append("дата прибытия: " + trains.getDateArrival()+ "\n");
+//                trainInfoText.append("время прибытия: " + trains.getTimeArrival()+ "\n");
+//                trainInfoText.append("время в пути: "+ trains.getTimeInWay()+ "\n");
+//
+//                List<TrainCarInfo> cars = new ArrayList<>(trains.getCars());
+//                StringBuilder carText = new StringBuilder();
+//
+//                for(TrainCarInfo car: cars){
+//                    carText.append("\n"+Icons.VAGON + "тип вагона: "+car.getCarType()+" "+ "\n");
+//                    carText.append("мин. цена: " + car.getTariff()+" "+ "\n");
+//                    carText.append("свободных мест: "+car.getFreeSeats()+"\n");
+//                }
+//
+//            replyToUser.setText(String.valueOf(trainInfoText.append(carText)));
+//            }
+            replyToUser.setText("Поиск завершен!");
+            //requestDataCache.setUsersCurrentBotState(userId, BotState.COMPLETE);
             return replyToUser;
         }
 
