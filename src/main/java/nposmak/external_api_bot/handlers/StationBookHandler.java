@@ -2,38 +2,33 @@ package nposmak.external_api_bot.handlers;
 
 import nposmak.external_api_bot.botState_control.BotState;
 import nposmak.external_api_bot.botState_control.InputMessageHandler;
-import nposmak.external_api_bot.chatCache.RequestData;
-import nposmak.external_api_bot.chatCache.RequestDataCache;
-import nposmak.external_api_bot.chatCache.StationCache;
 import nposmak.external_api_bot.config.Icons;
 import nposmak.external_api_bot.dto.StationCode;
+import nposmak.external_api_bot.redisCache.UsersData;
+import nposmak.external_api_bot.redisCache.UsersDataService;
 import nposmak.external_api_bot.service.StationBookCommunication;
-import nposmak.external_api_bot.service.StationCodeCommunication;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class StationBookHandler implements InputMessageHandler {
-    private RequestDataCache requestDataCache;
+    private UsersDataService usersDataService;
     private StationBookCommunication stationBookCommunication;
-    private StationCache stationCache;
 
-    public StationBookHandler(RequestDataCache requestDataCache,
-                              StationBookCommunication stationBookCommunication,
-                              StationCache stationCache) {
-        this.requestDataCache = requestDataCache;
+    public StationBookHandler(StationBookCommunication stationBookCommunication,
+                              UsersDataService usersDataService
+                              ) {
+        this.usersDataService = usersDataService;
         this.stationBookCommunication = stationBookCommunication;
-        this.stationCache = stationCache;
     }
 
     @Override
     public SendMessage handle(Message message) {
-        if(requestDataCache.getUsersCurrentBotState(message.getFrom().getId()).equals(BotState.STATION_BOOK)){
-            requestDataCache.setUsersCurrentBotState(message.getFrom().getId(), BotState.ASK_STATION_NAME);
+        if(usersDataService.getCurrentBotState(message.getFrom().getId()).equals(BotState.STATION_BOOK)){
+            usersDataService.setCurrentBotState(message.getFrom().getId(), BotState.ASK_STATION_NAME);
         }
         return processUsersMessage(message);
     }
@@ -51,12 +46,12 @@ public class StationBookHandler implements InputMessageHandler {
         SendMessage replyToUser = new SendMessage();
         replyToUser.setChatId(String.valueOf(chatId));
 
-        RequestData requestData = requestDataCache.getUsersTrainSearchData(userId);
-        BotState botState = requestDataCache.getUsersCurrentBotState(userId);
+        UsersData usersData = usersDataService.getTrainSearchData(userId);
+        BotState botState = usersDataService.getCurrentBotState(userId);
 
         if(botState.equals(BotState.ASK_STATION_NAME)){
             replyToUser.setText("Введите название станции:");
-            requestDataCache.setUsersCurrentBotState(userId, BotState.STATION_NAME_RECIVED);
+            usersDataService.setCurrentBotState(userId, BotState.STATION_NAME_RECIVED);
         }
 
         if(botState.equals(BotState.STATION_NAME_RECIVED)){
@@ -75,7 +70,6 @@ public class StationBookHandler implements InputMessageHandler {
 
             replyToUser.setText(String.valueOf(stationBookText));
             }
-            //requestDataCache.setUsersCurrentBotState(userId, BotState.MENU);
             return replyToUser;
         }
 

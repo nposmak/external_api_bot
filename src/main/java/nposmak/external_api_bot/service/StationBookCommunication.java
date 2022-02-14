@@ -2,7 +2,6 @@ package nposmak.external_api_bot.service;
 
 import lombok.Getter;
 import lombok.Setter;
-import nposmak.external_api_bot.chatCache.StationCache;
 import nposmak.external_api_bot.dto.StationCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -18,11 +17,9 @@ import java.util.List;
 public class StationBookCommunication {
 
     private RestTemplate restTemplate;
-    private StationCache stationCache;
 
-    public StationBookCommunication(RestTemplate restTemplate, StationCache stationCache){
+    public StationBookCommunication(RestTemplate restTemplate){
         this.restTemplate = restTemplate;
-        this.stationCache = stationCache;
     }
 
     public List<StationCode> processStationBookRequest(String stationName){
@@ -40,12 +37,6 @@ public class StationBookCommunication {
 
         if(stations == null){
             return Collections.emptyList();
-        }
-
-        for(StationCode stationCode : stations){
-
-            stationCache.addStationToCache(stationCode.getStationName(), stationCode.getStationCode());
-
         }
 
         return List.of(stations);

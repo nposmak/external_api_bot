@@ -13,15 +13,11 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 @Component
 public class TelegramFacade {
 
-    //private RequestDataCache requestDataCache;
     private UsersDataService usersDataService;
     private BotStateContext botStateContext;
 
-
-
     public TelegramFacade(UsersDataService usersDataService,
                           BotStateContext botStateContext) {
-        //this.requestDataCache = requestDataCache;
         this.usersDataService = usersDataService;
         this.botStateContext = botStateContext;
     }
@@ -55,13 +51,10 @@ public class TelegramFacade {
                 botState = BotState.MENU;
                 break;
             default:
-                //botState = requestDataCache.getUsersCurrentBotState(userId);
-                botState = usersDataService.getUsersCurrentBotState(userId);
+                botState = usersDataService.getCurrentBotState(userId);
                 break;
         }
-
-        //requestDataCache.setUsersCurrentBotState(userId, botState);
-        usersDataService.setCurrBotState(userId, botState);
+        usersDataService.setCurrentBotState(userId, botState);
         responseMessage = botStateContext.processInputMessage(botState, message);
         return responseMessage;
     }

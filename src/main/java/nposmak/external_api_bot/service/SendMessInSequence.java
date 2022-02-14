@@ -1,6 +1,6 @@
 package nposmak.external_api_bot.service;
 
-import nposmak.external_api_bot.chatCache.RequestDataCache;
+//import nposmak.external_api_bot.chatCache.RequestDataCache;
 import nposmak.external_api_bot.config.Icons;
 import nposmak.external_api_bot.config.TelegramBot;
 import nposmak.external_api_bot.dto.TrainCarInfo;
