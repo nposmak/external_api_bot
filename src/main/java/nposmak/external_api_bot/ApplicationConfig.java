@@ -53,8 +53,8 @@ public class ApplicationConfig {
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
-        redisStandaloneConfiguration.setHostName("192.168.99.100");//docker access url
-        redisStandaloneConfiguration.setPort(6379);//docker access port
+        redisStandaloneConfiguration.setHostName("redis-11879.c3.eu-west-1-2.ec2.cloud.redislabs.com");//docker access url
+        redisStandaloneConfiguration.setPort(11879);//docker access port
         //redisStandaloneConfiguration.setPassword("password");
 
         JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory(redisStandaloneConfiguration);
