@@ -1,6 +1,8 @@
 package nposmak.external_api_bot.botState_control;
 
-public enum BotState {
+import java.io.Serializable;
+
+public enum BotState implements Serializable {
 
     SEARCH_FOR_TRAIN,
     ASK_DEPARTURE_STATION,

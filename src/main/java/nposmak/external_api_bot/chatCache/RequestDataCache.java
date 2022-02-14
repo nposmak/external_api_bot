@@ -28,6 +28,7 @@ public class RequestDataCache implements RequestDataCacheInterface {
 
     @Override
     public void saveTrainSearchData(long userId, RequestData requestData) {
+
         usersRequestData.put(userId, requestData);
     }
 

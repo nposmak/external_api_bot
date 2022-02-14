@@ -15,7 +15,6 @@ import org.telegram.telegrambots.starter.SpringWebhookBot;
 @Setter
 public class TelegramBot extends SpringWebhookBot {
 
-
     private String botPath;
     private String botUserName;
     private String botToken;
@@ -49,13 +48,6 @@ public class TelegramBot extends SpringWebhookBot {
         }
     }
 
-    public void sendMessage(SendMessage sendMessage) {
-        try {
-            execute(sendMessage);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public String getBotPath() {

@@ -39,7 +39,6 @@ public class StationCodeCommunication {
         return stationCache.getStationCode(stationNameParam).orElse((long) -1);
     }
 
-
     private Optional <StationCode[]> processCodeRequest(String stationName){
 
         String stationNameParam = stationName.toUpperCase();
@@ -61,20 +60,13 @@ public class StationCodeCommunication {
         for(StationCode stationCode : allCodes){
 //            if(stationCode.getStationName().equals(stationNameParam)){
                 stationCache.addStationToCache(stationCode.getStationName(), stationCode.getStationCode());
-
             //}
         }
 
         return Optional.of(allCodes);
     }
-
-
-
-
-
-
 }
-//
+
 
 
 

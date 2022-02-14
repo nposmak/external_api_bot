@@ -4,19 +4,25 @@ package nposmak.external_api_bot;
 import nposmak.external_api_bot.config.TelegramBot;
 import nposmak.external_api_bot.config.TelegramBotConfig;
 import nposmak.external_api_bot.config.TelegramFacade;
-import org.springframework.context.MessageSource;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.web.client.RestTemplate;
 import org.telegram.telegrambots.meta.api.methods.updates.SetWebhook;
 
 @Configuration
+@EnableCaching
 public class ApplicationConfig {
 
     private final TelegramBotConfig botConfig;
 
     public ApplicationConfig(TelegramBotConfig botConfig) {
+
         this.botConfig = botConfig;
     }
 
@@ -44,15 +50,28 @@ public class ApplicationConfig {
         return telegramBot;
     }
 
-    /** message source for REPLY*/
     @Bean
-    public MessageSource messageSource() {
-        ReloadableResourceBundleMessageSource messageSource
-                = new ReloadableResourceBundleMessageSource();
+    public JedisConnectionFactory jedisConnectionFactory() {
+        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+        redisStandaloneConfiguration.setHostName("192.168.99.100");//docker access url
+        redisStandaloneConfiguration.setPort(6379);//docker access port
+        //redisStandaloneConfiguration.setPassword("password");
 
-        messageSource.setBasename("classpath:messages");
-        messageSource.setDefaultEncoding("UTF-8");
-        return messageSource;
+        JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory(redisStandaloneConfiguration);
+        return  jedisConnectionFactory;
+    }
+
+    @Bean
+    public RedisTemplate<String, Object> redisTemplate() {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(jedisConnectionFactory());
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+        redisTemplate.setHashKeySerializer(new JdkSerializationRedisSerializer());
+        redisTemplate.setValueSerializer(new JdkSerializationRedisSerializer());
+        redisTemplate.setEnableTransactionSupport(true);
+        redisTemplate.afterPropertiesSet();
+        return redisTemplate;
     }
 
 

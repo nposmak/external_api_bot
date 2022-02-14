@@ -58,13 +58,6 @@ public class TrainInfoCommunication{
         String ridResponseBody = responseForRIDRequest.getBody();
         System.out.println(ridResponseBody);
 
-//        Pattern pattern = Pattern.compile("[0-9]{11}");
-//        Matcher matcher = pattern.matcher(ridResponseBody);
-//
-//        long ridForSession = Long.parseLong(matcher.group());
-//        /**Проверить тут */
-
-
         String rid = null;
         try {
             JsonNode jsonNode = objectMapper.readTree(ridResponseBody.trim());
@@ -77,6 +70,7 @@ public class TrainInfoCommunication{
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
+
         long ridForSession = Long.parseLong(rid);
 
         List<String> sessionRIDCookie = responseForRIDRequest.getHeaders().get("Set-Cookie");

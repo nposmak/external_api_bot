@@ -3,7 +3,7 @@ package nposmak.external_api_bot.config;
 
 import nposmak.external_api_bot.botState_control.BotState;
 import nposmak.external_api_bot.botState_control.BotStateContext;
-import nposmak.external_api_bot.chatCache.RequestDataCache;
+import nposmak.external_api_bot.redisCache.UsersDataService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -13,13 +13,16 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 @Component
 public class TelegramFacade {
 
-    private RequestDataCache requestDataCache;
+    //private RequestDataCache requestDataCache;
+    private UsersDataService usersDataService;
     private BotStateContext botStateContext;
 
 
 
-    public TelegramFacade(RequestDataCache requestDataCache, BotStateContext botStateContext) {
-        this.requestDataCache = requestDataCache;
+    public TelegramFacade(UsersDataService usersDataService,
+                          BotStateContext botStateContext) {
+        //this.requestDataCache = requestDataCache;
+        this.usersDataService = usersDataService;
         this.botStateContext = botStateContext;
     }
 
@@ -52,16 +55,15 @@ public class TelegramFacade {
                 botState = BotState.MENU;
                 break;
             default:
-                botState = requestDataCache.getUsersCurrentBotState(userId);
+                //botState = requestDataCache.getUsersCurrentBotState(userId);
+                botState = usersDataService.getUsersCurrentBotState(userId);
                 break;
         }
 
-        requestDataCache.setUsersCurrentBotState(userId, botState);
-
+        //requestDataCache.setUsersCurrentBotState(userId, botState);
+        usersDataService.setCurrBotState(userId, botState);
         responseMessage = botStateContext.processInputMessage(botState, message);
-
         return responseMessage;
-
     }
 
 }

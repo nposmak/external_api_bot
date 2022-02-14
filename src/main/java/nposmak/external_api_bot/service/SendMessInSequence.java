@@ -14,12 +14,9 @@ import java.util.List;
 @Service
 public class SendMessInSequence {
     private TelegramBot telegramBot;
-    private RequestDataCache requestDataCache;
 
-    public SendMessInSequence(@Lazy TelegramBot telegramBot,
-                              RequestDataCache requestDataCache) {
+    public SendMessInSequence(@Lazy TelegramBot telegramBot) {
         this.telegramBot = telegramBot;
-        this.requestDataCache = requestDataCache;
     }
 
     public void TicketsMessageSequence(long chatId, List<TrainInfo> trainInfoList){

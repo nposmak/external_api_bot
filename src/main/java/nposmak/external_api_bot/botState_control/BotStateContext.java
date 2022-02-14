@@ -11,9 +11,8 @@ import java.util.Map;
 
 @Component
 public class BotStateContext {
+
     private Map<BotState, InputMessageHandler> messageHandlers = new HashMap<>();
-
-
 
     public BotStateContext(List<InputMessageHandler> messageHandlers) {
         messageHandlers.forEach(handler -> this.messageHandlers.put(handler.getHandlerName(), handler));
@@ -44,9 +43,7 @@ public class BotStateContext {
 
     private boolean isMenu(BotState currentState){
         switch (currentState) {
-
             case MENU:
-
                 return true;
             default:
                 return false;
@@ -55,14 +52,12 @@ public class BotStateContext {
 
     private boolean isTrainSearchState(BotState currentState) {
         switch (currentState) {
-
             case SEARCH_FOR_TRAIN:
             case ASK_DEPARTURE_STATION:
             case ASK_ARRIVAL_STATION:
             case ASK_DEPARTURE_DATE:
             case CHECK_DEPARTURE_DATE:
             case COMPLETE:
-
                 return true;
             default:
                 return false;
@@ -71,11 +66,9 @@ public class BotStateContext {
 
     private boolean isStationSearchState(BotState currentState) {
         switch (currentState) {
-
             case STATION_BOOK:
             case ASK_STATION_NAME:
             case STATION_NAME_RECIVED:
-
                 return true;
             default:
                 return false;
