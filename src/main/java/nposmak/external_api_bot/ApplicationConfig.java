@@ -55,7 +55,7 @@ public class ApplicationConfig {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName("redis-11879.c3.eu-west-1-2.ec2.cloud.redislabs.com");//docker access url
         redisStandaloneConfiguration.setPort(11879);//docker access port
-        //redisStandaloneConfiguration.setPassword("password");
+        redisStandaloneConfiguration.setPassword("5ni3UZcRBHMi7dkyusZ89eKsKId9tLQ3");
 
         JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory(redisStandaloneConfiguration);
         return  jedisConnectionFactory;
