@@ -73,7 +73,7 @@ public class TrainSearchHandler implements InputMessageHandler {
 
         if(botState.equals(BotState.ASK_ARRIVAL_STATION)){
             long departureStationCode = stationCodeCommunication.getStationCode(usersAnswer);
-            if( departureStationCode == -1){
+            if( departureStationCode == 0){
                 replyToUser.setText("Станция не найдена, введите заного или проверьте в СПРАВОЧНИКЕ СТАНЦИЙ.");
               return replyToUser;
             }else
@@ -86,7 +86,7 @@ public class TrainSearchHandler implements InputMessageHandler {
         if(botState.equals(BotState.ASK_DEPARTURE_DATE)){
             long arrivalStationCode = stationCodeCommunication.getStationCode(usersAnswer);
 
-            if(arrivalStationCode == -1){
+            if(arrivalStationCode == 0){
                 replyToUser.setText("Станция не найдена, введите заного или проверьте в СПРАВОЧНИКЕ СТАНЦИЙ.");
                 return replyToUser;
             }
