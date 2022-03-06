@@ -38,5 +38,4 @@ public class TrainInfo {
     @JsonProperty(value = "cars")
     private List<TrainCarInfo> cars;
 
-
 }

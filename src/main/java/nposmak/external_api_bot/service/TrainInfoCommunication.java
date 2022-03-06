@@ -105,7 +105,6 @@ public class TrainInfoCommunication{
                             String.class
                     );
         }
-
         String resultInfo = responseForTrainRequest.getBody();
 
         List<TrainInfo> trainInfoList =null;
@@ -125,22 +124,6 @@ public class TrainInfoCommunication{
         if (responseForTrainRequest.getBody() == null) {
             return true;
         }
-
         return responseForTrainRequest.getBody().contains("\"result\":\"RID");
-    }
-
-    private Optional<String> parseRID(String jsonRespBody) {
-        String rid = null;
-        try {
-            JsonNode jsonNode = objectMapper.readTree(jsonRespBody.trim());
-            JsonNode ridNode = jsonNode.get("RID");
-            if (ridNode != null) {
-                rid = ridNode.asText();
-            }
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-
-        return Optional.ofNullable(rid);
     }
 }

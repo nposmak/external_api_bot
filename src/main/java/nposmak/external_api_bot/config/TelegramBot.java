@@ -48,7 +48,6 @@ public class TelegramBot extends SpringWebhookBot {
         }
     }
 
-
     @Override
     public String getBotPath() {
         return botPath;

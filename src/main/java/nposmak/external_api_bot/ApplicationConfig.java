@@ -22,10 +22,8 @@ public class ApplicationConfig {
     private final TelegramBotConfig botConfig;
 
     public ApplicationConfig(TelegramBotConfig botConfig) {
-
         this.botConfig = botConfig;
     }
-
 
     @Bean
     public RestTemplate restTemplate(){
@@ -37,8 +35,6 @@ public class ApplicationConfig {
     public SetWebhook setWebhookInstance() {
         return SetWebhook.builder().url(botConfig.getBotPath()).build();
     }
-
-
 
     @Bean
     public TelegramBot springWebhookBot(SetWebhook setWebhook, TelegramFacade telegramFacade) {
